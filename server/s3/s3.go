@@ -2,7 +2,6 @@ package s3
 
 import (
 	"bytes"
-	"encoding"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
