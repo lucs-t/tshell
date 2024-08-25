@@ -1,65 +1,63 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
-	"strings"
+
+	"github.com/lucs-t/tshell/cmd"
+	"github.com/lucs-t/tshell/cmd/utils"
 )
 
 func main() {
-	addCmd := flag.NewFlagSet("add", flag.ExitOnError)
-	var pwdInfo, keyInfo string
-
-	// 定义 -p 和 -k 选项
-	addCmd.StringVar(&pwdInfo, "p", "", "user:password:host:port for ssh connection")
-	addCmd.StringVar(&keyInfo, "k", "", "user:keyPath:host:port for ssh connection")
-
-	// 检查是否提供了 "add" 子命令
+	flagMgr := cmd.NewFlagManager()
 	if len(os.Args) < 2 {
-		fmt.Println("Expected 'add' subcommand")
-		os.Exit(1)
+		utils.FlagUsage()
+		return
 	}
-
-	// 解析 "add" 子命令
+	var m = map[string]string{}
 	switch os.Args[1] {
 	case "add":
-		addCmd.Parse(os.Args[2:])
+		err := flagMgr.Parse("add")
+		if err != nil {
+			return
+		}
+		m = flagMgr.GetData()
+	case "remove":
+		err := flagMgr.Parse("remove")
+		if err != nil {
+			return
+		}
+		m = flagMgr.GetData()
+	case "show":
+		//todo
+		fmt.Println("show")
+		return
+	case "config":
+		if len(os.Args) < 3 {
+			utils.ConfigUsage()
+			return
+		}
+		if os.Args[2] == "add" {
+			err := flagMgr.Parse("configAdd")
+			if err != nil {
+				return
+			}
+			m = flagMgr.GetData()
+		}else if os.Args[2] == "remove" {
+			// todo
+			fmt.Println("config remove")
+		}else if os.Args[2] == "info" {
+			// todo
+			fmt.Println("config info")
+		}else{
+			fmt.Println("Error: Invalid Argument")
+		}
+	case "-h","--help":
+		utils.FlagUsage()
+		return
 	default:
-		fmt.Println("Expected 'add' subcommand")
-		os.Exit(1)
+		utils.FlagUsage()
+		return
 	}
-
-	// 处理 -p 选项
-	if pwdInfo != "" {
-		parts := strings.Split(pwdInfo, ":")
-		if len(parts) == 4 {
-			user := parts[0]
-			password := parts[1]
-			host := parts[2]
-			port := parts[3]
-			fmt.Printf("Adding SSH connection with password:\nUser: %s\nPassword: %s\nHost: %s\nPort: %s\n", user, password, host, port)
-		} else {
-			fmt.Println("Invalid format for -p. Expected format: user:password:host:port")
-		}
-	}
-
-	// 处理 -k 选项
-	if keyInfo != "" {
-		parts := strings.Split(keyInfo, ":")
-		if len(parts) == 4 {
-			user := parts[0]
-			keyPath := parts[1]
-			host := parts[2]
-			port := parts[3]
-			fmt.Printf("Adding SSH connection with key:\nUser: %s\nKey Path: %s\nHost: %s\nPort: %s\n", user, keyPath, host, port)
-		} else {
-			fmt.Println("Invalid format for -k. Expected format: user:keyPath:host:port")
-		}
-	}
-
-	// 如果没有提供任何参数
-	if pwdInfo == "" && keyInfo == "" {
-		fmt.Println("Please specify either -p or -k with correct format.")
-	}
+	fmt.Println(m)
 }
