@@ -10,9 +10,11 @@ func FlagUsage() {
 	fmt.Println("Description:")
 	fmt.Println("  A simple tool to manage SSH connections")
 	fmt.Println("Commands:")
-	fmt.Println("  add    Add a new SSH connection")
-	fmt.Println("  remove Remove a SSH connection")
-	fmt.Println("  show   Show all SSH connection")
+	fmt.Println("  cnn     Connect to a SSH connection")
+	fmt.Println("  add     Add a new SSH connection")
+	fmt.Println("  remove  Remove a SSH connection")
+	fmt.Println("  show    Show all SSH connection")
+	fmt.Println("  config  configure the tshell")
 }
 
 

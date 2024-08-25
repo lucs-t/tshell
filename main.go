@@ -49,6 +49,9 @@ func main() {
 		}else if os.Args[2] == "info" {
 			// todo
 			fmt.Println("config info")
+		}else if os.Args[2] == "-h" || os.Args[2] == "--help" {
+			utils.ConfigUsage()
+			return
 		}else{
 			fmt.Println("Error: Invalid Argument")
 		}
