@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/lucs-t/tshell/cmd"
-	"github.com/lucs-t/tshell/cmd/utils"
+	"github.com/lucs-t/tshell/utils"
 )
 
 func main() {
@@ -32,7 +32,7 @@ func main() {
 		//todo
 		fmt.Println("show")
 		return
-	case "config":
+	case "s3":
 		if len(os.Args) < 3 {
 			utils.ConfigUsage()
 			return
@@ -45,10 +45,10 @@ func main() {
 			m = flagMgr.GetData()
 		}else if os.Args[2] == "remove" {
 			// todo
-			fmt.Println("config remove")
+			fmt.Println("s3 remove")
 		}else if os.Args[2] == "info" {
 			// todo
-			fmt.Println("config info")
+			fmt.Println("s3 info")
 		}else if os.Args[2] == "-h" || os.Args[2] == "--help" {
 			utils.ConfigUsage()
 			return

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	sshinfo "github.com/lucs-t/tshell/cmd/Flags/sshinfo"
-	"github.com/lucs-t/tshell/cmd/flags/sshconfig"
+	"github.com/lucs-t/tshell/cmd/flags/s3config"
 )
 
 type Flag interface {
@@ -11,7 +11,7 @@ type Flag interface {
 }
 
 var _  Flag = &sshinfo.SSHInfo{}
-var _  Flag = &sshconfig.SSHConfig{}
+var _  Flag = &s3config.S3Config{}
 
 type FlagManager struct {
 	Flags []Flag 
@@ -19,7 +19,7 @@ type FlagManager struct {
 func NewFlagManager() *FlagManager {
 	flags := []Flag{}
 	flags = append(flags, sshinfo.NewSSHInfo())
-	flags = append(flags, sshconfig.NewSSHConfig())
+	flags = append(flags, s3config.NewS3Config())
 	return &FlagManager{Flags: flags}
 }
 

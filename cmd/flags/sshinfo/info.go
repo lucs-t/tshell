@@ -3,11 +3,12 @@ package sshinfo
 import (
 	"flag"
 	"fmt"
+
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/lucs-t/tshell/cmd/utils"
+	"github.com/lucs-t/tshell/utils"
 )
 
 type SSHInfo struct {
@@ -39,7 +40,7 @@ func (s *SSHInfo) Parse(arg string) error{
 	if set,ok := s.FlagSets[arg]; ok {
 		set.Parse(os.Args[2:])
 		if s.sshName != "" {
-			s.Info[utils.SshName] = s.sshName
+			s.Info[utils.SshInfoName] = s.sshName
 		}
 		if s.keyPath != "" {
 			s.Info[utils.KeyPath] = s.keyPath
@@ -59,8 +60,7 @@ func (s *SSHInfo) Parse(arg string) error{
 				}
 				_,err := strconv.Atoi(s.Info[utils.Port])
 				if err != nil {
-					fmt.Println("Error: invalid port")
-					return err
+					return utils.Errorf("invalid port\n%s", err.Error())
 				}
 				isvalid = true
 			}
@@ -71,8 +71,7 @@ func (s *SSHInfo) Parse(arg string) error{
 				isvalid = true
 			}
 			if !isvalid {
-				fmt.Println("Error: -u: invalid argument,format: user:host:port")
-				return fmt.Errorf("invalid argument")
+				return utils.Errorf("invalid argument,format: user:host:port")
 			}
 			if s.sshName == "" {
 				s.Info[utils.SshName] = s.Info[utils.Host]
@@ -83,18 +82,15 @@ func (s *SSHInfo) Parse(arg string) error{
 		}
 		if arg == "add" {
 			if s.Info[utils.User] == "" {
-				fmt.Println("Error: user is required")
-				return fmt.Errorf("user is required")
+				return utils.Errorf("user is required")
 			}
 			if s.Info[utils.Host] == "" {
-				fmt.Println("Error: host is required")
-				return fmt.Errorf("host is required")
+				return utils.Errorf("host is required")
 			}
 		}
 		if arg == "remove" {
 			if s.Info[utils.SshName] == "" && !s.removeAll {
-				fmt.Println("Error: -n or --all is required")
-				return fmt.Errorf("-n or --all is required")
+				return utils.Errorf("-n or --all is required")
 			}
 		}
 	}

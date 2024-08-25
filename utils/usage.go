@@ -14,7 +14,7 @@ func FlagUsage() {
 	fmt.Println("  add     Add a new SSH connection")
 	fmt.Println("  remove  Remove a SSH connection")
 	fmt.Println("  show    Show all SSH connection")
-	fmt.Println("  config  configure the tshell")
+	fmt.Println("  s3      Synchronize ssh connection information to s3")
 }
 
 

@@ -18,4 +18,11 @@ const RemoveAll = "all"
 const AK = "ak"
 const SK = "sk"
 const Region = "region"
+const Bucket = "bucket"
 const UpdatePath = "updatePath"
+const Endpoint = "endpoint"
+
+// fileName
+
+const SshInfoName = "sshinfo.json"
+const SshConfigName = "sshconfig.json"

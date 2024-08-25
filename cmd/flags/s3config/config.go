@@ -1,25 +1,26 @@
-package sshconfig
+package s3config
 
 import (
-	"errors"
 	"flag"
-	"fmt"
 	"os"
+	"strings"
 
-	"github.com/lucs-t/tshell/cmd/utils"
+	"github.com/lucs-t/tshell/utils"
 )
 
-type SSHConfig struct {
+type S3Config struct {
 	FlagSets   map[string]*flag.FlagSet
 	Config     map[string]string
 	ak         string
 	sk         string
 	region     string
+	bucket    string
 	updatePath string
+	endpoint  string
 }
 
-func NewSSHConfig() *SSHConfig {
-	var s = SSHConfig{
+func NewS3Config() *S3Config {
+	var s = S3Config{
 		FlagSets: make(map[string]*flag.FlagSet),
 		Config:   make(map[string]string),
 	}
@@ -27,48 +28,55 @@ func NewSSHConfig() *SSHConfig {
 	return &s
 }
 
-func (s *SSHConfig) GetData() map[string]string {
+func (s *S3Config) GetData() map[string]string {
 	return s.Config
 }
 
-func (s *SSHConfig) Parse(arg string) error {
+func (s *S3Config) Parse(arg string) error {
 	if set, ok := s.FlagSets[arg]; ok {
 		set.Parse(os.Args[3:])
 		if arg == "configAdd" {
 			if s.ak != "" {
 				s.Config[utils.AK] = s.ak
 			}else{
-				fmt.Println("Error: access key is required")
-				return errors.New("access key is required")
+				return utils.Errorf("access key is required")
 			}
 			if s.sk != "" {
 				s.Config[utils.SK] = s.sk
 			}else{
-				fmt.Println("Error: access secret is required")
-				return errors.New("access secret is required")
+				return utils.Errorf("access secret is required")
 			}
 			if s.region != "" {
 				s.Config[utils.Region] = s.region
 			}else{
-				fmt.Println("Error: region is required")
-				return errors.New("region is required")
+				return utils.Errorf("region is required")
+			}
+			if s.endpoint != "" {
+				s.Config[utils.Endpoint] = s.endpoint
+			}else{
+				return utils.Errorf("endpoint is required")
 			}
 			if s.updatePath != "" {
-				s.Config[utils.UpdatePath] = s.updatePath
+				ss := strings.Split(s.updatePath, ":")
+				if len(ss) != 2 {
+					return utils.Errorf("update path format is wrong")
+				}
+				s.Config[utils.Bucket] = ss[0]
+				s.Config[utils.UpdatePath] = ss[1]
 			}else{
-				fmt.Println("Error: bucket:filerpath is required")
-				return errors.New("bucket:filerpath is required")
+				return utils.Errorf("update path is required")
 			}
 		}
 	}
 	return nil
 }
 
-func (s *SSHConfig) add() {
+func (s *S3Config) add() {
 	s.FlagSets["configAdd"] = flag.NewFlagSet("add", flag.ExitOnError)
 	s.FlagSets["configAdd"].Usage = utils.ConfigAddUsage(s.FlagSets["configAdd"])
 	s.FlagSets["configAdd"].StringVar(&s.ak, "k", "", "access key")
 	s.FlagSets["configAdd"].StringVar(&s.sk, "s", "", "access secret")
 	s.FlagSets["configAdd"].StringVar(&s.region, "r", "", "region")
 	s.FlagSets["configAdd"].StringVar(&s.updatePath, "p", "", "format: bucket:updatePath")
+	s.FlagSets["configAdd"].StringVar(&s.endpoint, "e", "", "endpoint")
 }
