@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	sshinfo "github.com/lucs-t/tshell/cmd/Flags/sshinfo"
+	sshinfo "github.com/lucs-t/tshell/cmd/flags/sshinfo"
 	"github.com/lucs-t/tshell/cmd/flags/s3config"
 )
 
